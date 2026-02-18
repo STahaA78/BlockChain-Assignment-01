@@ -10,7 +10,7 @@ type Blockchain struct {
 // Create new blockchain with Genesis block
 func NewBlockchain() *Blockchain {
 
-	genesis := NewBlock(0, []string{"i22-6638"}, "0") // Roll number required
+	genesis := NewBlock(0, []string{"22L-6638"}, "0") // Roll number required
 	genesis.MineBlock()
 
 	return &Blockchain{

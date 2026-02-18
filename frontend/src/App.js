@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import './index.css'; // Make sure CSS is imported
 
 const API = "http://localhost:8080";
 
@@ -21,6 +22,7 @@ function App() {
   };
 
   const addTransaction = async () => {
+    if (!transaction.trim()) return;
     await axios.post(`${API}/add`, { transaction });
     setTransaction("");
     fetchPending();
@@ -33,6 +35,7 @@ function App() {
   };
 
   const searchData = async () => {
+    if (!search.trim()) return;
     const res = await axios.get(`${API}/search?data=${search}`);
     setSearchResult(res.data);
   };
@@ -43,29 +46,73 @@ function App() {
   }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Syed_Taha_Ahmed Blockchain</h1>
+    <div className="app-container">
+      <header className="app-header">
+        {/* Required Assignment Header */}
+        <h1>Syed_Taha_Ahmed Blockchain</h1>
+      </header>
 
-      <h2>Add Transaction</h2>
-      <input
-        value={transaction}
-        onChange={(e) => setTransaction(e.target.value)}
-      />
-      <button onClick={addTransaction}>Add</button>
+      <main className="main-content">
+        {/* Actions Panel */}
+        <section className="card action-panel">
+          <div className="input-group">
+            <h2>Add Transaction</h2>
+            <div className="flex-row">
+              <input
+                type="text"
+                placeholder="Enter transaction data..."
+                value={transaction}
+                onChange={(e) => setTransaction(e.target.value)}
+              />
+              <button className="btn-primary" onClick={addTransaction}>Add</button>
+            </div>
+          </div>
 
-      <h2>Pending Transactions</h2>
-      <pre>{JSON.stringify(pending, null, 2)}</pre>
+          <div className="input-group">
+            <h2>Search Transaction</h2>
+            <div className="flex-row">
+              <input
+                type="text"
+                placeholder="Search by data (e.g., i22-6638)..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="btn-secondary" onClick={searchData}>Search</button>
+            </div>
+          </div>
 
-      <h2>Mine Block</h2>
-      <button onClick={mineBlock}>Mine</button>
+          <div className="mine-group">
+            <h2>Mine Pending Block</h2>
+            <button className="btn-mine" onClick={mineBlock}>⛏️ Mine Block</button>
+          </div>
+        </section>
 
-      <h2>Blockchain</h2>
-      <pre>{JSON.stringify(chain, null, 2)}</pre>
+        {/* Data Display Panel */}
+        <section className="data-panel">
+          <div className="card">
+            <h2>Pending Transactions</h2>
+            {pending.length === 0 ? (
+              <p className="empty-state">No pending transactions.</p>
+            ) : (
+              <pre className="json-display">{JSON.stringify(pending, null, 2)}</pre>
+            )}
+          </div>
 
-      <h2>Search Transaction</h2>
-      <input value={search} onChange={(e) => setSearch(e.target.value)} />
-      <button onClick={searchData}>Search</button>
-      <pre>{JSON.stringify(searchResult, null, 2)}</pre>
+          {searchResult && (
+            <div className="card highlight-card">
+              <h2>Search Result</h2>
+              <pre className="json-display">{JSON.stringify(searchResult, null, 2)}</pre>
+            </div>
+          )}
+
+          <div className="card">
+            <h2>Blockchain Ledger</h2>
+            <pre className="json-display blockchain-display">
+              {JSON.stringify(chain, null, 2)}
+            </pre>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
